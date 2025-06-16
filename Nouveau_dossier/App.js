@@ -12,7 +12,7 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
 // Pour compatibilité Expo Go et tests sur appareil physique, l'URL doit être accessible sur le réseau local
-const API_URL = 'http://192.168.1.65:3000/api'; // <-- Mets ici l'IP et le port de ton backend Node/Express
+const API_URL = 'http://10.74.3.247:3000/api'; // <-- Mets ici l'IP et le port de ton backend Node/Express
 
 // CONTEXTE AUTH
 const AuthContext = React.createContext();
@@ -121,43 +121,53 @@ function LoginScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{t('login')}</Text>
-      <TextInput
-        placeholder={t('username') + '...'}
-        value={username}
-        onChangeText={setUsername}
-        style={[styles.input, error && styles.inputError]}
-        autoCapitalize="none"
-        autoCorrect={false}
-        returnKeyType="next"
-        leftIcon={<MaterialIcons name="person" size={20} color={COLORS.primary} />}
-      />
-      <View style={{ position: 'relative' }}>
-        <TextInput
-          placeholder={t('password') + '...'}
-          value={password}
-          onChangeText={setPassword}
-          style={[styles.input, error && styles.inputError]}
-          secureTextEntry
-          autoCapitalize="none"
-          autoCorrect={false}
-          returnKeyType="done"
-        />
-        {/* Bouton d'affichage du mot de passe à ajouter si besoin */}
+    <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background }]}>  
+      <View style={{ alignItems: 'center', marginBottom: 32 }}>
+        <MaterialIcons name="confirmation-number" size={64} color={COLORS.primary} style={{ marginBottom: 8 }} />
+        <Text style={[styles.title, { fontSize: 32, color: COLORS.primary, fontWeight: 'bold', marginBottom: 4 }]}>{t('login')}</Text>
+        <Text style={{ color: COLORS.text, fontSize: 16, opacity: 0.7 }}>{t('Connectez-vous pour accéder à votre espace')}</Text>
       </View>
-      {error ? <Banner type="error" message={error} visible={!!error} accessibilityLabel={error} /> : null}
-      <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading} activeOpacity={0.8} accessibilityLabel={t('loginBtn')}>
-        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>{t('loginBtn')}</Text>}
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonSecondary} onPress={() => navigation.replace('Register')} disabled={loading} activeOpacity={0.8}>
-        <Text style={styles.buttonTextSecondary}>{t('toRegister')}</Text>
-      </TouchableOpacity>
-      {/* Sélecteur de langue */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 16 }}>
-        <Text style={{ marginRight: 8 }}>{t('language')}:</Text>
-        <Text style={{ color: lang === 'fr' ? COLORS.primary : COLORS.text, fontWeight: lang === 'fr' ? 'bold' : 'normal', marginRight: 8 }} onPress={() => setLang('fr')}>{t('french')}</Text>
-        <Text style={{ color: lang === 'en' ? COLORS.primary : COLORS.text, fontWeight: lang === 'en' ? 'bold' : 'normal' }} onPress={() => setLang('en')}>{t('english')}</Text>
+      <View style={{ width: '100%', maxWidth: 360 }}>
+        <View style={{ position: 'relative', marginBottom: 18 }}>
+          <MaterialIcons name="person" size={22} color={COLORS.primary} style={{ position: 'absolute', left: 16, top: 18, zIndex: 1 }} />
+          <TextInput
+            placeholder={t('username') + '...'}
+            value={username}
+            onChangeText={setUsername}
+            style={[styles.input, { paddingLeft: 48, borderRadius: 16, backgroundColor: COLORS.card, elevation: 2, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8 }, error && styles.inputError]}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="next"
+            accessibilityLabel={t('username')}
+          />
+        </View>
+        <View style={{ position: 'relative', marginBottom: 18 }}>
+          <MaterialIcons name="lock" size={22} color={COLORS.primary} style={{ position: 'absolute', left: 16, top: 18, zIndex: 1 }} />
+          <TextInput
+            placeholder={t('password') + '...'}
+            value={password}
+            onChangeText={setPassword}
+            style={[styles.input, { paddingLeft: 48, borderRadius: 16, backgroundColor: COLORS.card, elevation: 2, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8 }, error && styles.inputError]}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="done"
+            accessibilityLabel={t('password')}
+          />
+        </View>
+        {error ? <Banner type="error" message={error} visible={!!error} accessibilityLabel={error} /> : null}
+        <TouchableOpacity style={[styles.button, { borderRadius: 16, marginTop: 8, height: 52, justifyContent: 'center', backgroundColor: COLORS.primary, shadowColor: COLORS.primary, shadowOpacity: 0.18, shadowRadius: 8 }]} onPress={handleLogin} disabled={loading} activeOpacity={0.85} accessibilityLabel={t('loginBtn')}>
+          {loading ? <ActivityIndicator color="#fff" /> : <Text style={[styles.buttonText, { fontSize: 18, fontWeight: 'bold' }]}>{t('loginBtn')}</Text>}
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.buttonSecondary, { borderRadius: 16, marginTop: 12, height: 48, justifyContent: 'center', borderWidth: 1, borderColor: COLORS.primary }]} onPress={() => navigation.replace('Register')} disabled={loading} activeOpacity={0.85}>
+          <Text style={[styles.buttonTextSecondary, { color: COLORS.primary, fontWeight: 'bold', fontSize: 16 }]}>{t('toRegister')}</Text>
+        </TouchableOpacity>
+        {/* Sélecteur de langue */}
+        <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 24 }}>
+          <Text style={{ marginRight: 8 }}>{t('language')}:</Text>
+          <Text style={{ color: lang === 'fr' ? COLORS.primary : COLORS.text, fontWeight: lang === 'fr' ? 'bold' : 'normal', marginRight: 8 }} onPress={() => setLang('fr')}>{t('french')}</Text>
+          <Text style={{ color: lang === 'en' ? COLORS.primary : COLORS.text, fontWeight: lang === 'en' ? 'bold' : 'normal' }} onPress={() => setLang('en')}>{t('english')}</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -209,73 +219,79 @@ function RegisterScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{t('register')}</Text>
-      <View style={{ position: 'relative' }}>
-        <MaterialIcons name="person" size={20} color={COLORS.primary} style={{ position: 'absolute', left: 16, top: 18, zIndex: 1 }} />
-        <TextInput
-          placeholder={t('username') + '...'}
-          value={username}
-          onChangeText={setUsername}
-          style={[styles.input, { paddingLeft: 44 }, error && styles.inputError]}
-          autoCapitalize="none"
-          autoCorrect={false}
-          returnKeyType="next"
-          accessibilityLabel={t('username')}
-        />
+    <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background }]}>  
+      <View style={{ alignItems: 'center', marginBottom: 32 }}>
+        <MaterialIcons name="person-add" size={64} color={COLORS.primary} style={{ marginBottom: 8 }} />
+        <Text style={[styles.title, { fontSize: 32, color: COLORS.primary, fontWeight: 'bold', marginBottom: 4 }]}>{t('register')}</Text>
+        <Text style={{ color: COLORS.text, fontSize: 16, opacity: 0.7 }}>{t('Créez votre compte pour accéder à l’application')}</Text>
       </View>
-      <View style={{ position: 'relative' }}>
-        <MaterialIcons name="lock" size={20} color={COLORS.primary} style={{ position: 'absolute', left: 16, top: 18, zIndex: 1 }} />
-        <TextInput
-          placeholder={t('password') + '...'}
-          value={password}
-          onChangeText={setPassword}
-          style={[styles.input, { paddingLeft: 44 }, error && styles.inputError]}
-          secureTextEntry={!showPassword}
-          autoCapitalize="none"
-          autoCorrect={false}
-          returnKeyType="next"
-          accessibilityLabel={t('password')}
-        />
-        <TouchableOpacity
-          style={{ position: 'absolute', right: 16, top: 16, zIndex: 2 }}
-          onPress={() => setShowPassword(v => !v)}
-          accessibilityLabel={showPassword ? t('Masquer le mot de passe') : t('Afficher le mot de passe')}
-        >
-          <MaterialIcons name={showPassword ? 'visibility-off' : 'visibility'} size={22} color={COLORS.primary} />
+      <View style={{ width: '100%', maxWidth: 360 }}>
+        <View style={{ position: 'relative', marginBottom: 18 }}>
+          <MaterialIcons name="person" size={22} color={COLORS.primary} style={{ position: 'absolute', left: 16, top: 18, zIndex: 1 }} />
+          <TextInput
+            placeholder={t('username') + '...'}
+            value={username}
+            onChangeText={setUsername}
+            style={[styles.input, { paddingLeft: 48, borderRadius: 16, backgroundColor: COLORS.card, elevation: 2, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8 }, error && styles.inputError]}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="next"
+            accessibilityLabel={t('username')}
+          />
+        </View>
+        <View style={{ position: 'relative', marginBottom: 18 }}>
+          <MaterialIcons name="lock" size={22} color={COLORS.primary} style={{ position: 'absolute', left: 16, top: 18, zIndex: 1 }} />
+          <TextInput
+            placeholder={t('password') + '...'}
+            value={password}
+            onChangeText={setPassword}
+            style={[styles.input, { paddingLeft: 48, borderRadius: 16, backgroundColor: COLORS.card, elevation: 2, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8 }, error && styles.inputError]}
+            secureTextEntry={!showPassword}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="next"
+            accessibilityLabel={t('password')}
+          />
+          <TouchableOpacity
+            style={{ position: 'absolute', right: 16, top: 16, zIndex: 2 }}
+            onPress={() => setShowPassword(v => !v)}
+            accessibilityLabel={showPassword ? t('Masquer le mot de passe') : t('Afficher le mot de passe')}
+          >
+            <MaterialIcons name={showPassword ? 'visibility-off' : 'visibility'} size={22} color={COLORS.primary} />
+          </TouchableOpacity>
+        </View>
+        <View style={{ position: 'relative', marginBottom: 18 }}>
+          <MaterialIcons name="lock-outline" size={22} color={COLORS.primary} style={{ position: 'absolute', left: 16, top: 18, zIndex: 1 }} />
+          <TextInput
+            placeholder={t('confirmPassword') + '...'}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            style={[styles.input, { paddingLeft: 48, borderRadius: 16, backgroundColor: COLORS.card, elevation: 2, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8 }, error && styles.inputError]}
+            secureTextEntry={!showConfirm}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="done"
+            accessibilityLabel={t('confirmPassword')}
+          />
+          <TouchableOpacity
+            style={{ position: 'absolute', right: 16, top: 16, zIndex: 2 }}
+            onPress={() => setShowConfirm(v => !v)}
+            accessibilityLabel={showConfirm ? t('Masquer le mot de passe') : t('Afficher le mot de passe')}
+          >
+            <MaterialIcons name={showConfirm ? 'visibility-off' : 'visibility'} size={22} color={COLORS.primary} />
+          </TouchableOpacity>
+        </View>
+        {error ? <Banner type="error" message={error} visible={!!error} accessibilityLabel={error} /> : null}
+        {success ? <Banner type="success" message={success} visible={!!success} accessibilityLabel={success} /> : null}
+        <Animated.View style={{ transform: [{ scale: registerScale }] }}>
+          <TouchableOpacity style={[styles.button, { borderRadius: 16, marginTop: 8, height: 52, justifyContent: 'center', backgroundColor: COLORS.primary, shadowColor: COLORS.primary, shadowOpacity: 0.18, shadowRadius: 8 }]} onPress={handleRegister} disabled={loading} activeOpacity={0.85} accessibilityLabel={t('registerBtn')}>
+            {loading ? <ActivityIndicator color="#fff" /> : <Text style={[styles.buttonText, { fontSize: 18, fontWeight: 'bold' }]}>{t('registerBtn')}</Text>}
+          </TouchableOpacity>
+        </Animated.View>
+        <TouchableOpacity style={[styles.buttonSecondary, { borderRadius: 16, marginTop: 12, height: 48, justifyContent: 'center', borderWidth: 1, borderColor: COLORS.primary }]} onPress={() => navigation.replace('Login')} disabled={loading} activeOpacity={0.85} accessibilityLabel={t('toLogin')}>
+          <Text style={[styles.buttonTextSecondary, { color: COLORS.primary, fontWeight: 'bold', fontSize: 16 }]}>{t('toLogin')}</Text>
         </TouchableOpacity>
       </View>
-      <View style={{ position: 'relative' }}>
-        <MaterialIcons name="lock-outline" size={20} color={COLORS.primary} style={{ position: 'absolute', left: 16, top: 18, zIndex: 1 }} />
-        <TextInput
-          placeholder={t('confirmPassword') + '...'}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          style={[styles.input, { paddingLeft: 44 }, error && styles.inputError]}
-          secureTextEntry={!showConfirm}
-          autoCapitalize="none"
-          autoCorrect={false}
-          returnKeyType="done"
-          accessibilityLabel={t('confirmPassword')}
-        />
-        <TouchableOpacity
-          style={{ position: 'absolute', right: 16, top: 16, zIndex: 2 }}
-          onPress={() => setShowConfirm(v => !v)}
-          accessibilityLabel={showConfirm ? t('Masquer le mot de passe') : t('Afficher le mot de passe')}
-        >
-          <MaterialIcons name={showConfirm ? 'visibility-off' : 'visibility'} size={22} color={COLORS.primary} />
-        </TouchableOpacity>
-      </View>
-      {error ? <Banner type="error" message={error} visible={!!error} accessibilityLabel={error} /> : null}
-      {success ? <Banner type="success" message={success} visible={!!success} accessibilityLabel={success} /> : null}
-      <Animated.View style={{ transform: [{ scale: registerScale }] }}>
-        <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={loading} activeOpacity={0.8} accessibilityLabel={t('registerBtn')}>
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>{t('registerBtn')}</Text>}
-        </TouchableOpacity>
-      </Animated.View>
-      <TouchableOpacity style={styles.buttonSecondary} onPress={() => navigation.replace('Login')} disabled={loading} activeOpacity={0.8} accessibilityLabel={t('toLogin')}>
-        <Text style={styles.buttonTextSecondary}>{t('toLogin')}</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -542,6 +558,41 @@ function AdminScreen() {
     setDatePickerVisible(false);
   };
 
+  // Ajout du state et des handlers pour l'édition d'événement
+  const [editEventId, setEditEventId] = React.useState(null);
+  const [editEventName, setEditEventName] = React.useState('');
+  const [editEventDate, setEditEventDate] = React.useState('');
+  const [editEventPrice, setEditEventPrice] = React.useState('');
+
+  function handleEditEventStart(ev) {
+    setEditEventId(ev._id);
+    setEditEventName(ev.name);
+    setEditEventDate(ev.date);
+    setEditEventPrice(ev.price ? String(ev.price) : '');
+  }
+  function handleEditEventCancel() {
+    setEditEventId(null);
+    setEditEventName('');
+    setEditEventDate('');
+    setEditEventPrice('');
+  }
+  async function handleEditEventValidate(id) {
+    try {
+      const res = await fetch(`${API_URL}/events/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ name: editEventName, date: editEventDate, price: Number(editEventPrice) })
+      });
+      let data = null;
+      try { data = await res.json(); } catch {}
+      if (!res.ok) throw new Error((data && data.message) ? data.message : 'Erreur lors de la modification');
+      fetchEvents();
+      handleEditEventCancel();
+    } catch (e) {
+      Alert.alert('Erreur', e.message || 'Erreur lors de la modification');
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{t('admin')}</Text>
@@ -588,11 +639,9 @@ function AdminScreen() {
       </View>
       {error ? <Banner type="error" message={error} visible={!!error} accessibilityLabel={error} /> : null}
       {success ? <Banner type="success" message={success} visible={!!success} accessibilityLabel={success} /> : null}
-      <Animated.View style={{ transform: [{ scale: createScale }] }}>
-        <TouchableOpacity style={styles.button} onPress={handleCreate} disabled={loading} activeOpacity={0.8} accessibilityLabel={t('create')}>
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>{t('create')}</Text>}
-        </TouchableOpacity>
-      </Animated.View>
+      <TouchableOpacity style={[styles.button, { borderRadius: 16, marginTop: 8, height: 52, justifyContent: 'center', backgroundColor: COLORS.primary, shadowColor: COLORS.primary, shadowOpacity: 0.18, shadowRadius: 8 }]} onPress={handleCreate} disabled={loading} activeOpacity={0.85} accessibilityLabel={t('create')}>
+        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>{t('create')}</Text>}
+      </TouchableOpacity>
       <Text style={styles.adminListTitle}>{t('eventList')}</Text>
       {loading && <ActivityIndicator color={COLORS.primary} style={{ marginVertical: 16 }} />}
       <ScrollView contentContainerStyle={events.length === 0 ? { flex: 1, justifyContent: 'center', alignItems: 'center' } : {}}>
@@ -608,20 +657,74 @@ function AdminScreen() {
             }}
           >
             <View style={styles.card}>
-              <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{ev.name}</Text>
-              <Text>{t('date')} : {ev.date}</Text>
-              <Text>{t('Prix')} : {ev.price} €</Text>
-              <TouchableOpacity
-                style={styles.buttonSmall}
-                onPress={() => setConfirmDeleteId(ev._id)}
-                accessibilityLabel={t('delete')}
-                activeOpacity={0.8}
-                disabled={loading}
-              >
-                <MaterialIcons name="delete" size={18} color="#fff" />
-                <Text style={styles.buttonTextSmall}>{t('delete')}</Text>
-              </TouchableOpacity>
-              <ConfirmModal visible={confirmDeleteId === ev._id} message={t('Confirmer la suppression de cet événement ?')} onConfirm={() => handleDelete(ev._id)} onCancel={() => setConfirmDeleteId(null)} />
+              {editEventId === ev._id ? (
+                <>
+                  <TextInput
+                    style={styles.input}
+                    value={editEventName}
+                    onChangeText={setEditEventName}
+                    placeholder={t('name')}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    value={editEventDate}
+                    onChangeText={setEditEventDate}
+                    placeholder={t('date')}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    value={editEventPrice}
+                    onChangeText={setEditEventPrice}
+                    placeholder={t('Prix')}
+                    keyboardType="numeric"
+                  />
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <TouchableOpacity
+                      style={[styles.buttonSmall, { flex: 1, marginRight: 8 }]}
+                      onPress={() => handleEditEventValidate(ev._id)}
+                      accessibilityLabel={t('Valider')}
+                    >
+                      <MaterialIcons name="check" size={18} color="#fff" />
+                      <Text style={styles.buttonTextSmall}>{t('Valider')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.buttonSmall, { flex: 1, backgroundColor: COLORS.error }]}
+                      onPress={handleEditEventCancel}
+                      accessibilityLabel={t('Annuler')}
+                    >
+                      <MaterialIcons name="close" size={18} color="#fff" />
+                      <Text style={styles.buttonTextSmall}>{t('Annuler')}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : (
+                <>
+                  <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{ev.name}</Text>
+                  <Text>{t('date')} : {ev.date}</Text>
+                  <Text>{t('Prix')} : {ev.price} €</Text>
+                  <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                    <TouchableOpacity
+                      style={[styles.buttonSmall, { marginRight: 8 }]}
+                      onPress={() => handleEditEventStart(ev)}
+                      accessibilityLabel={t('Modifier')}
+                    >
+                      <MaterialIcons name="edit" size={18} color="#fff" />
+                      <Text style={styles.buttonTextSmall}>{t('Modifier')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.buttonSmall}
+                      onPress={() => setConfirmDeleteId(ev._id)}
+                      accessibilityLabel={t('delete')}
+                      activeOpacity={0.8}
+                      disabled={loading}
+                    >
+                      <MaterialIcons name="delete" size={18} color="#fff" />
+                      <Text style={styles.buttonTextSmall}>{t('delete')}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <ConfirmModal visible={confirmDeleteId === ev._id} message={t('Confirmer la suppression de cet événement ?')} onConfirm={() => handleDelete(ev._id)} onCancel={() => setConfirmDeleteId(null)} />
+                </>
+              )}
             </View>
           </Animated.View>
         ))}

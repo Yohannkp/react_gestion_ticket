@@ -1,14 +1,13 @@
 const express = require('express');
 const Ticket = require('../models/Ticket');
 const Event = require('../models/Event');
+const { User } = require('../models/User');
 const auth = require('../middleware/auth');
 const PDFDocument = require('pdfkit');
 const QRCode = require('qrcode');
 const fs = require('fs');
 const path = require('path');
 const router = express.Router();
-const User = require('../models/User');
-const sendExpoNotification = require('../utils/sendExpoNotification');
 
 // Acheter un ticket pour un événement
 router.post('/buy', auth, async (req, res) => {
@@ -45,20 +44,6 @@ router.post('/buy', auth, async (req, res) => {
     // Stocker l'URL du PDF
     ticket.pdfUrl = `/api/tickets/pdf/${ticket._id}`;
     await ticket.save();
-    // NOTIFICATION PUSH (si pushToken dispo)
-    try {
-      const user = await User.findById(req.user.id);
-      if (user && user.pushToken) {
-        await sendExpoNotification(
-          user.pushToken,
-          'Ticket acheté',
-          `Votre ticket pour "${event.name}" a été généré !`,
-          { eventId: event._id, ticketId: ticket._id }
-        );
-      }
-    } catch (e) {
-      console.warn('Erreur notification push:', e);
-    }
     res.status(201).json({ ticket });
   } catch (err) {
     // Gestion de l'erreur de duplication (index unique)
@@ -81,7 +66,6 @@ router.get('/pdf/:ticketId', async (req, res, next) => {
   if (!token) return res.status(401).json({ message: 'Token manquant' });
   // Vérification du token (copie de la logique du middleware auth)
   const jwt = require('jsonwebtoken');
-  const User = require('../models/User');
   let decoded;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -110,6 +94,25 @@ router.get('/my', auth, async (req, res) => {
       pdfUrl: t.pdfUrl,
       qrCode: t.qrCode,
     })) });
+});
+
+// Route pour modifier un ticket (admin ou propriétaire)
+router.put('/:ticketId', auth, async (req, res) => {
+  try {
+    const ticket = await Ticket.findById(req.params.ticketId);
+    if (!ticket) return res.status(404).json({ message: 'Ticket non trouvé' });
+    // Vérifier si admin ou propriétaire du ticket
+    if (req.user.username !== 'admin' && ticket.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Non autorisé' });
+    }
+    // Autoriser la modification de certains champs (exemple : event)
+    if (req.body.event) ticket.event = req.body.event;
+    // Ajoute ici d'autres champs modifiables si besoin
+    await ticket.save();
+    res.json({ ticket });
+  } catch (err) {
+    res.status(400).json({ message: 'Erreur lors de la modification', error: err.message });
+  }
 });
 
 module.exports = router;

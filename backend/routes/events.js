@@ -36,4 +36,21 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+// Modification d’un événement (admin uniquement)
+router.put('/:id', auth, async (req, res) => {
+  if (req.user.username !== 'admin') return res.status(403).json({ message: 'Accès refusé' });
+  const { name, date, price } = req.body;
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ message: 'Événement introuvable' });
+    if (name !== undefined) event.name = name;
+    if (date !== undefined) event.date = date;
+    if (price !== undefined) event.price = price;
+    await event.save();
+    res.json({ event });
+  } catch (err) {
+    res.status(400).json({ message: 'Erreur lors de la modification', error: err.message });
+  }
+});
+
 module.exports = router;

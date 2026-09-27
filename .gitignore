@@ -1,0 +1,20 @@
+# Environnement et secrets
+.env
+.env.*
+!.env.example
+
+# Dependances
+node_modules/
+
+# Build
+dist/
+build/
+.expo/
+
+# Journaux
+*.log
+npm-debug.log*
+
+# Systeme
+.DS_Store
+Thumbs.db
